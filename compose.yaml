@@ -1,0 +1,40 @@
+services:
+  frontend:
+    build:
+      context: frontend
+    ports:
+      - 3000:3000
+    stdin_open: true
+    volumes:
+      - ./frontend:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: always
+    networks:
+      - react-starlite
+    depends_on:
+      - backend
+
+  backend:
+    restart: always
+    build:
+      context: backend
+    volumes:
+      - ./backend:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      - mongo
+    networks:
+      - starlite-mongo
+      - react-starlite
+    ports:
+      - 8000:8000
+  mongo:
+    restart: always
+    image: mongo:4.2.0
+    networks:
+      - starlite-mongo
+    ports:
+      - 27017:27017
+networks:
+  react-starlite:
+  starlite-mongo:
